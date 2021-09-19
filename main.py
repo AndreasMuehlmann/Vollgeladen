@@ -21,7 +21,7 @@ class Hotel:
 
 
 def get_hotels_from_website():
-    url = 'https://bwinf.de/fileadmin/user_upload/hotels2.txt'
+    url = 'https://bwinf.de/fileadmin/user_upload/hotels1.txt'
     result = requests.get(url)
     doc = result.content.decode("utf-8").split()
     HOTEL_COUNT = int(doc[0])
@@ -60,8 +60,6 @@ def path_finder(current_hotel=None, stays=0, path=[], current_path=deque([]), be
         reachable = give_reachable(current_hotel.time_needed, hotels)
     if reachable == True:
         return current_best_lowest_valuation, current_path
-    if not reachable or stays >= OVERNIGHT_STAYS:
-        return best_lowest_valuation, path
     if not reachable or stays >= OVERNIGHT_STAYS:
         return best_lowest_valuation, path
     for hotel in reachable:
