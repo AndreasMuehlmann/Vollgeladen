@@ -14,7 +14,7 @@ TRAVEL_LENGTH_DAILY = 360
 
 multiple_tries = False
 random_hotels = False
-print_all_hotels = False
+should_print_all_hotels = False
 
 @dataclass()
 class Hotel:
@@ -111,7 +111,7 @@ def main():
         start = time.time()
         best_lowest_valuation, path = path_finder()
         end = time.time()
-        if print_all_hotels:
+        if should_print_all_hotels:
             print_all_hotels(hotels)
         print_variables()
         if path:
