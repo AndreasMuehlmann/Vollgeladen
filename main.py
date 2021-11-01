@@ -1,6 +1,5 @@
 import random
 import copy
-from collections import deque
 from dataclasses import dataclass
 import requests
 import time
