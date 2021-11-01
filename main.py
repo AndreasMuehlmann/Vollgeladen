@@ -3,18 +3,22 @@ import copy
 from collections import deque
 import requests
 import time
+
+
 TRIES = 20
 HIGHEST_VALUATION = 10
 HOTEL_COUNT = 12
 END = 1680
 OVERNIGHT_STAYS = 4
 TRAVEL_LENGTH_DAILY = 360
+
 multiple_tries = False
 random_hotels = False
 print_all_hotels = False
 
 
 class Hotel:
+
     def __init__(self, time_needed, valuation):
         self.time_needed = time_needed
         self.valuation = valuation
