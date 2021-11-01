@@ -1,9 +1,9 @@
 import random
 import copy
 from collections import deque
+from dataclasses import dataclass
 import requests
 import time
-
 
 TRIES = 20
 HIGHEST_VALUATION = 10
@@ -14,14 +14,12 @@ TRAVEL_LENGTH_DAILY = 360
 
 multiple_tries = False
 random_hotels = False
-print_all_hotels = False
+should_print_all_hotels = False
 
-
+@dataclass()
 class Hotel:
-
-    def __init__(self, time_needed, valuation):
-        self.time_needed = time_needed
-        self.valuation = valuation
+    time_needed : int
+    valuation : int
 
 
 def get_hotels_from_website():
@@ -47,12 +45,13 @@ def give_reachable(current_time, hotels):
         return True
     reachable = []
     for hotel in hotels:
-        if current_time <hotel.time_needed <= current_time + TRAVEL_LENGTH_DAILY:
+        if current_time < hotel.time_needed <= current_time + TRAVEL_LENGTH_DAILY:
             reachable.append(hotel)
     reachable.sort(reverse = True, key = lambda hotel : hotel.valuation)
-    return reachable #returns reachable hotels if END is reachable returns True
+    return reachable #returns reachable hotels/empty list, if END is reachable returns True
 
-def path_finder(current_hotel=None, stays=0, path=[], current_path=deque([]), best_lowest_valuation=0, current_best_lowest_valuation=HIGHEST_VALUATION + 1):
+def path_finder(current_hotel=None, stays=0, path=[], # finds path through hotels with the best lowest valuation
+current_path=[], best_lowest_valuation=0, current_best_lowest_valuation=HIGHEST_VALUATION + 1):
     if current_hotel is  None:
         reachable = give_reachable(0, hotels)
     else:
@@ -73,21 +72,35 @@ def path_finder(current_hotel=None, stays=0, path=[], current_path=deque([]), be
         best_lowest_valuation, path = path_finder(hotel, stays, path, current_path, best_lowest_valuation, current_best_lowest_valuation)
     return best_lowest_valuation, path
 
+def print_all_hotels(hotels):
+    print('These were the hotels:')
+    for hotel in hotels:
+        print(f'{hotel.time_needed}min {hotel.valuation}')
+
+def print_variables():
+    print(f'This was your daily travel length: {TRAVEL_LENGTH_DAILY}min.')
+    print(f'This was the amount of stays you wanted to make: {OVERNIGHT_STAYS}.')
+    print(f'The whole route took {END}min.')
+
+def print_path(path):
+    print('This is your path: ')
+    for hotel in path:
+        print(f'{hotel.time_needed}min {hotel.valuation}')
+
 def main():
     global hotels
     if multiple_tries:
         all_tries_best_lowest_valuation = 0
         total_time = 0
+        start = time.time()
         for i in range(TRIES):
             if random_hotels:
                 hotels = make_random_hotels()
             else:
                 hotels = get_hotels_from_website()
-            start = time.time()
             best_lowest_valuation, path = path_finder()
-            end = time.time()
-            total_time += end - start
             all_tries_best_lowest_valuation += best_lowest_valuation
+        total_time = start - time.time()
         print(f'average best lowest valuation: {all_tries_best_lowest_valuation / TRIES}')
         print(f'average time: {total_time / TRIES}')
     else:
@@ -98,17 +111,11 @@ def main():
         start = time.time()
         best_lowest_valuation, path = path_finder()
         end = time.time()
-        if print_all_hotels:
-            print('These were the hotels:')
-            for hotel in hotels:
-                print(f'{hotel.time_needed}min {hotel.valuation}')
-        print(f'This was your daily travel length: {TRAVEL_LENGTH_DAILY}min.')
-        print(f'This was the amount of stays you wanted to make: {OVERNIGHT_STAYS}.')
-        print(f'The whole route took {END}min.')
+        if should_print_all_hotels:
+            print_all_hotels(hotels)
+        print_variables()
         if path:
-            print('This is your path: ')
-            for hotel in path:
-                print(f'{hotel.time_needed}min {hotel.valuation}')
+            print_path(path)
             print(f'It has the best lowest valuation of {best_lowest_valuation}.')
         else:
             print('there is no path')
