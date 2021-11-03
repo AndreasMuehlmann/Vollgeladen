@@ -1,8 +1,6 @@
-import random
 import copy
 from dataclasses import dataclass
 import requests
-import time
 
 TRIES = 20
 HIGHEST_VALUATION = 10
@@ -18,25 +16,16 @@ should_print_all_hotels = False
 @dataclass()
 class Hotel:
     time_needed : int
-    valuation : int
+    valuation : float
 
 
-def get_hotels_from_website():
-    url = 'https://bwinf.de/fileadmin/user_upload/hotels1.txt'
+def get_hotels_from_website(url):
     result = requests.get(url)
     doc = result.content.decode("utf-8").split()
-    HOTEL_COUNT = int(doc[0])
-    END = int(doc[1])
     doc = doc[2:]
     hotels = []
     for line in range(0, len(doc), 2):
         hotels.append(Hotel(int(doc[line]), float(doc[line + 1])))
-    return hotels
-
-def make_random_hotels():
-    hotels = []
-    for hotel in range(HOTEL_COUNT):
-            hotels.append(Hotel(random.randint(1,END), random.randint(1,HIGHEST_VALUATION)))
     return hotels
 
 def give_reachable(current_time, hotels):
@@ -71,36 +60,25 @@ current_path=[], best_lowest_valuation=0, current_best_lowest_valuation=HIGHEST_
         best_lowest_valuation, path = path_finder(hotel, stays, path, current_path, best_lowest_valuation, current_best_lowest_valuation)
     return best_lowest_valuation, path
 
-def print_all_hotels(hotels):
-    print('These were the hotels:')
-    for hotel in hotels:
-        print(f'{hotel.time_needed}min {hotel.valuation}')
-
-def print_variables():
-    print(f'This was your daily travel length: {TRAVEL_LENGTH_DAILY}min.')
-    print(f'This was the amount of stays you wanted to make: {OVERNIGHT_STAYS}.')
-    print(f'The whole route took {END}min.')
-
-def print_path(path):
-    print('This is your path: ')
+def write_path_to_file(path, file):
+    file.write('The path with the best lowest valuation:\n\n')
     for hotel in path:
-        print(f'{hotel.time_needed}min {hotel.valuation}')
+        file.write(f'Hotel at time  {hotel.time_needed}min, valuation  {hotel.valuation}\n')
+    file.write('\n')
 
 def main():
     global hotels
-    hotels = make_random_hotels()
-    start = time.time()
-    best_lowest_valuation, path = path_finder()
-    end = time.time()
-    if should_print_all_hotels:
-        print_all_hotels(hotels)
-    print_variables()
-    if path:
-        print_path(path)
-        print(f'It has the best lowest valuation of {best_lowest_valuation}.')
-    else:
-        print('there is no path')
-    print(f'The programm took {end - start}')
+    with open('schiebeparkplatz_results.txt', 'w') as file:
+        for task in range(1, 3):
+            file.write(f'Test {task}\n\n')
+            hotels = get_hotels_from_website(f'https://bwinf.de/fileadmin/user_upload/hotels{task}.txt')
+            best_lowest_valuation, path = path_finder()
+            if path:
+                write_path_to_file(path, file)
+                file.write(f'It has the best lowest valuation of {best_lowest_valuation}.\n')
+            else:
+                file.write('there is no path\n')
+            file.write('\n\n')
 
 if __name__=='__main__':
     main()
