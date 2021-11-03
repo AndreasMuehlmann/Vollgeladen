@@ -88,37 +88,19 @@ def print_path(path):
 
 def main():
     global hotels
-    if multiple_tries:
-        all_tries_best_lowest_valuation = 0
-        total_time = 0
-        start = time.time()
-        for i in range(TRIES):
-            if random_hotels:
-                hotels = make_random_hotels()
-            else:
-                hotels = get_hotels_from_website()
-            best_lowest_valuation, path = path_finder()
-            all_tries_best_lowest_valuation += best_lowest_valuation
-        total_time = start - time.time()
-        print(f'average best lowest valuation: {all_tries_best_lowest_valuation / TRIES}')
-        print(f'average time: {total_time / TRIES}')
+    hotels = make_random_hotels()
+    start = time.time()
+    best_lowest_valuation, path = path_finder()
+    end = time.time()
+    if should_print_all_hotels:
+        print_all_hotels(hotels)
+    print_variables()
+    if path:
+        print_path(path)
+        print(f'It has the best lowest valuation of {best_lowest_valuation}.')
     else:
-        if random_hotels:
-            hotels = make_random_hotels()
-        else:
-            hotels = get_hotels_from_website()
-        start = time.time()
-        best_lowest_valuation, path = path_finder()
-        end = time.time()
-        if should_print_all_hotels:
-            print_all_hotels(hotels)
-        print_variables()
-        if path:
-            print_path(path)
-            print(f'It has the best lowest valuation of {best_lowest_valuation}.')
-        else:
-            print('there is no path')
-        print(f'The programm took {end - start}')
+        print('there is no path')
+    print(f'The programm took {end - start}')
 
 if __name__=='__main__':
     main()
