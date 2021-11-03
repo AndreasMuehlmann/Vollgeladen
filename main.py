@@ -68,8 +68,8 @@ def write_path_to_file(path, file):
 
 def main():
     global hotels
-    with open('schiebeparkplatz_results.txt', 'w') as file:
-        for task in range(1, 3):
+    with open('vollgeladen_results.txt', 'w') as file:
+        for task in range(1, 6):
             file.write(f'Test {task}\n\n')
             hotels = get_hotels_from_website(f'https://bwinf.de/fileadmin/user_upload/hotels{task}.txt')
             best_lowest_valuation, path = path_finder()
