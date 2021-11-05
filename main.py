@@ -68,8 +68,9 @@ def write_path_to_file(path, file):
 
 def main():
     global hotels
-    with open('vollgeladen_results.txt', 'w') as file:
-        for task in range(1, 6):
+    for task in range(1, 6):
+        with open(f'vollgeladen_results.txt{task}', 'w') as file:
+            file.write('Vollgeladen\n\n')
             file.write(f'Test {task}\n\n')
             hotels = get_hotels_from_website(f'https://bwinf.de/fileadmin/user_upload/hotels{task}.txt')
             best_lowest_valuation, path = path_finder()
@@ -78,7 +79,6 @@ def main():
                 file.write(f'It has the best lowest valuation of {best_lowest_valuation}.\n')
             else:
                 file.write('there is no path\n')
-            file.write('\n\n')
 
 if __name__=='__main__':
     main()
