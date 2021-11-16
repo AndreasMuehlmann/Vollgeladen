@@ -1,0 +1,12 @@
+Vollgeladen
+
+Test 2
+
+The path with the best lowest valuation:
+
+Hotel at time  341min, valuation  2.3
+Hotel at time  700min, valuation  3.0
+Hotel at time  1053min, valuation  4.8
+Hotel at time  1367min, valuation  4.5
+
+It has the best lowest valuation of 2.3.
